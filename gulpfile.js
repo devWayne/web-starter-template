@@ -37,8 +37,8 @@ gulp.task('concat-css', function() {
 
 // Copy All Files At The Root Level (app)
 gulp.task('copy', function () {
-  return gulp.src(['app/html/*'], {dot: true})
-    .pipe(gulp.dest('dist/html'))
+  return gulp.src(['app/*'], {dot: true})
+    .pipe(gulp.dest('dist/'))
     .pipe($.size({title: 'copy'}));
 });
 
@@ -80,7 +80,7 @@ gulp.task('serve', function () {
   browserSync({
     notify: false,
     server: {
-      baseDir: ['app/html']
+      baseDir: ['app/']
     }
   });
 
