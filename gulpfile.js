@@ -3,13 +3,10 @@ var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var less = require('gulp-less');
 var del = require('del');
-var runSequence = require('run-sequence');
+var runSequence   = require('run-sequence');
+var imagemin = require('gulp-imagemin');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
-
-
-
-var $ = require('gulp-load-plugins')();
 
 
 // Lint JavaScript
@@ -22,10 +19,9 @@ gulp.task('jshint', function () {
 });
 
 gulp.task('compress-js', function() {
-  gulp.src('app/js/**/*.js')
+  return gulp.src('app/js/**/*.js')
     .pipe(uglify())
-     .pipe(concat('all.min.js'))
-        .pipe(gulp.dest('dist/js'));
+    .pipe(gulp.dest('dist/js'));
 });
     
 gulp.task('concat-css', function() {
@@ -37,22 +33,17 @@ gulp.task('concat-css', function() {
 
 // Copy All Files At The Root Level (app)
 gulp.task('copy', function () {
-  return gulp.src(['app/*'], {dot: true})
-    .pipe(gulp.dest('dist/'))
-    .pipe($.size({title: 'copy'}));
+  return gulp.src(['app/html/*'], {dot: true})
+    .pipe(gulp.dest('dist/html/'))
 });
 
-// Optimize Images
-gulp.task('images', function () {
+// Copy all static images
+gulp.task('images', ['clean'], function() {
   return gulp.src('app/images/**/*')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true
-    })))
-    .pipe(gulp.dest('dist/images'))
-    .pipe($.size({title: 'images'}));
+    // Pass in options to the task
+    .pipe(imagemin({optimizationLevel: 5}))
+    .pipe(gulp.dest('dist/images'));
 });
-
 
 //Compile less
 gulp.task('build-less', function () {
@@ -80,7 +71,7 @@ gulp.task('serve', function () {
   browserSync({
     notify: false,
     server: {
-      baseDir: ['app/']
+      baseDir: ['app/html/']
     }
   });
 
@@ -93,5 +84,5 @@ gulp.task('serve', function () {
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence(['images','concat-css','compress-js','copy'], cb);
+  runSequence(['images','build-less','concat-css','compress-js','copy'], cb);
 });
