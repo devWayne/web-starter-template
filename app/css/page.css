@@ -35,3 +35,128 @@ td {
   margin: 0;
   padding: 0;
 }
+.newuser {
+  list-style: none;
+}
+.newuser .btn-list {
+  background-color: black;
+  height: 100px;
+  text-align: center;
+}
+.newuser .btn-list .first-btn {
+  color: white;
+  background-color: red;
+  border-radius: 3px;
+  padding: 12px 70px;
+  text-align: center;
+  right: auto;
+  left: auto;
+  bottom: 50px;
+  margin: 0 40px 20px 40px;
+}
+.newuser .btn-list .second-btn {
+  color: white;
+  font-size: 13px;
+}
+.newuser .btn-list .third-btn {
+  color: white;
+  font-size: 10px;
+}
+.newuser .list {
+  padding: 10px;
+  display: -webkit-box;
+  position: relative;
+}
+.newuser .list .left-blk {
+  width: 40%;
+  -webkit-box-sizing: border-box;
+}
+.newuser .list .right-blk {
+  font-size: 14px;
+  width: 60%;
+  -webkit-box-sizing: border-box;
+}
+.newuser .list .right-blk .line-one {
+  color: #666;
+  padding-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.newuser .list .right-blk .line-two {
+  position: relative;
+  padding-left: 15px;
+  color: #ff8200;
+  font-size: 40px;
+}
+.newuser .list .right-blk .line-two .rmb {
+  position: absolute;
+  top: 2px;
+  left: 0px;
+  font-size: 18px;
+}
+.newuser .list .right-blk .line-three {
+  margin-top: 5px;
+  color: #bbb;
+  text-decoration: line-through;
+}
+.newuser .list .buynow {
+  position: absolute;
+  background-color: #ff8200;
+  padding: 5px 15px;
+  text-decoration: none;
+  color: white;
+  bottom: 10px;
+  right: 10px;
+  border-radius: 2px;
+}
+.newuser .pro-list {
+  color: #999;
+  padding: 15px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  background-color: #eee;
+}
+.newuser .words-list1 {
+  padding: 15px;
+  letter-spacing: 1px;
+  font-size: 13px;
+  color: #777;
+  line-height: 20px;
+}
+.newuser .words-list1 .backtotop {
+  margin: 15px 30px;
+  text-align: center;
+  font-size: 16px;
+  padding: 10px;
+  border: #ff8200 1px solid;
+  border-radius: 3px;
+  color: #ff8200;
+}
+.newuser .words-list2 {
+  padding: 15px;
+  letter-spacing: 1px;
+  font-size: 16px;
+  color: #bbb;
+  line-height: 20px;
+}
+.newuser .words-list2 .sendBtn {
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-align: center;
+  color: white;
+  background-color: #ff8200;
+  padding: 15px;
+  margin: 10px 0px;
+  border-radius: 5px;
+}
+.newuser .words-list3 {
+  padding: 15px;
+  letter-spacing: 1px;
+  font-size: 16px;
+  color: #666;
+  line-height: 25px;
+}
+.newuser .words-list3 .ora {
+  color: #ff8200;
+}
