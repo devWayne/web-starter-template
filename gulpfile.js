@@ -1,88 +1,143 @@
+var fs = require('fs');
+var path = require('path');
+
 var gulp = require('gulp');
-var browserSync = require('browser-sync');
-var reload = browserSync.reload;
+var plugins = require('gulp-load-plugins')(); // Load all gulp plugins
+                                              // automatically and attach
 var less = require('gulp-less');
-var del = require('del');
-var runSequence   = require('run-sequence');
-var imagemin = require('gulp-imagemin');
-var uglify = require('gulp-uglify');
+var jade = require('gulp-jade');
+var runSequence = require('run-sequence');    // Temporary solution until gulp 4
+var pkg = require('./package.json');
+var dirs = pkg['h5bp-configs'].directories;
 var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
 
-
-// Lint JavaScript
-gulp.task('jshint', function () {
-  return gulp.src('app/js/**/*.js')
-    .pipe(reload({stream: true, once: true}))
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+gulp.task('archive:create_archive_dir', function () {
+    fs.mkdirSync(path.resolve(dirs.archive), '0755');
 });
 
-gulp.task('compress-js', function() {
-  return gulp.src('app/js/**/*.js')
+gulp.task('archive:zip', function (done) {
+
+    var archiveName = path.resolve(dirs.archive, pkg.name + '_v' + pkg.version + '.zip');
+    var archiver = require('archiver')('zip');
+    var files = require('glob').sync('**/*.*', {
+        'cwd': dirs.dist,
+        'dot': true // include hidden files
+    });
+    var output = fs.createWriteStream(archiveName);
+
+    archiver.on('error', function (error) {
+        done();
+        throw error;
+    });
+
+    output.on('close', done);
+
+    files.forEach(function (file) {
+
+        var filePath = path.resolve(dirs.dist, file);
+
+        // `archiver.bulk` does not maintain the file
+        // permissions, so we need to add files individually
+        archiver.append(fs.createReadStream(filePath), {
+            'name': file,
+            'mode': fs.statSync(filePath)
+        });
+
+    });
+
+    archiver.pipe(output);
+    archiver.finalize();
+
+});
+
+
+
+gulp.task('concat:js', function() {
+  return gulp.src(dirs.src +'/javascript/**/*')
+    .pipe(concat('index.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/js'));
-});
-    
-gulp.task('concat-css', function() {
-  gulp.src('app/css/**/*.css')
-    .pipe(concat('all.css'))
-    .pipe(gulp.dest('dist/css'))
+    .pipe(gulp.dest(dirs.src+'/js'))
 });
 
 
-// Copy All Files At The Root Level (app)
-gulp.task('copy', function () {
-  return gulp.src(['app/html/*'], {dot: true})
-    .pipe(gulp.dest('dist/html/'))
-});
 
-// Copy all static images
-gulp.task('images', ['clean'], function() {
-  return gulp.src('app/images/**/*')
-    // Pass in options to the task
-    .pipe(imagemin({optimizationLevel: 5}))
-    .pipe(gulp.dest('dist/images'));
-});
+gulp.task('compile:less', function () {
 
-//Compile less
-gulp.task('build-less', function () {
-  gulp.src('app/less/**/*.less')
-     .pipe(less())
-    .pipe(gulp.dest('app/css'));
+    var banner = '/*! template v' + pkg.version +' */\n\n';
+
+    return gulp.src(dirs.src+'/less/*.less')
+               .pipe(less())
+               .pipe(plugins.header(banner))
+               .pipe(gulp.dest(dirs.src+'/css'));
+
 });
 
 
-// Clean Output Directory
-gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
+gulp.task('copy:misc', function () {
+    return gulp.src([
+         dirs.src+'/**/*',
+        // Exclude the following files
+        // (other tasks will handle the copying of these files)
+	'!'+dirs.src+'/javascript/**/*',
+	'!'+dirs.src+'/less/*'
+    ], {
 
+        // Include hidden files by default
+        dot: true
 
-gulp.task('serve:dist', ['default'], function() {
-	browserSync({
-		notify: false,
-		server: {
-			baseDir: 'dist'
-		}
-	});
+    }).pipe(gulp.dest(dirs.dist));
 });
 
-// Watch Files For Changes & Reload
-gulp.task('serve', function () {
-  browserSync({
-    notify: false,
-    server: {
-      baseDir: ['app/html/']
-    }
-  });
 
-  gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/less/**/*.less'], ['build-less']);
-  gulp.watch(['app/css/**/*.css'], reload);
-  gulp.watch(['app/js/**/*.js'], reload);
-  gulp.watch(['app/images/**/*'], reload);
+gulp.task('jshint', function () {
+    return gulp.src([
+        'gulpfile.js',
+         dirs.src+'/javascript/**/*'
+    ]).pipe(plugins.jshint())
+      .pipe(plugins.jshint.reporter('jshint-stylish'))
+      .pipe(plugins.jshint.reporter('fail'));
 });
 
-// Build Production Files, the Default Task
-gulp.task('default', ['clean'], function (cb) {
-  runSequence(['images','build-less','concat-css','compress-js','copy'], cb);
+gulp.task('watch', function () {
+    gulp.watch([dirs.src+'/less/*'], ['compile:less']);
 });
+
+
+// -----------------------------------------------------------------------------
+// | Main tasks                                                                |
+// -----------------------------------------------------------------------------
+gulp.task('clean', function (done) {
+    require('del')([
+        dirs.archive,
+        dirs.dist
+    ], done);
+});
+
+gulp.task('copy', [
+	'copy:misc'
+]);
+
+gulp.task('compile',[
+	'compile:less',
+	'concat:js'
+]);
+
+gulp.task('archive', function (done) {
+    runSequence(
+        'build',
+        'archive:create_archive_dir',
+        'archive:zip',
+    done);
+});
+
+gulp.task('build', function (done) {
+    runSequence(
+        ['clean'],
+	'compile',
+        'copy',
+    done);
+});
+
+gulp.task('default', ['build']);
+
