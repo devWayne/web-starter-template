@@ -11,6 +11,7 @@ var pkg = require('./package.json');
 var dirs = pkg['h5bp-configs'].directories;
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var ftp = require('gulp-ftp');
 
 gulp.task('archive:create_archive_dir', function () {
     fs.mkdirSync(path.resolve(dirs.archive), '0755');
@@ -140,4 +141,27 @@ gulp.task('build', function (done) {
 });
 
 gulp.task('default', ['build']);
+
+gulp.task('product', function() {
+    return gulp.src(DIST + '**/*.*')
+        .pipe(ftp({
+            host: 'xxx.xxx.xxx.xx',
+            port: 21,
+            user: '',
+            pass: '',
+            remotePath: 'assets/'
+        }))
+});
+
+gulp.task('beta', function() {
+    return gulp.src(DIST + '**/*.*')
+        .pipe(ftp({
+            host: 'xxx.xxx.xxx.xx',
+            port: 21,
+            user: '',
+            pass: '',
+            remotePath: 'asssets/'
+        }))
+});
+
 
