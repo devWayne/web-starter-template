@@ -6,95 +6,49 @@ var plugins = require('gulp-load-plugins')(); // Load all gulp plugins
                                               // automatically and attach
 var less = require('gulp-less');
 var jade = require('gulp-jade');
-var runSequence = require('run-sequence');    // Temporary solution until gulp 4
-var pkg = require('./package.json');
-var dirs = pkg['h5bp-configs'].directories;
+var runSequence = require('run-sequence');
+var cfg = require('./config.json');
+var dirs = cfg['h5bpconfigs'].directories;
+var ftpcfg = cfg['ftpconfigs'];
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var ftp = require('gulp-ftp');
-
-gulp.task('archive:create_archive_dir', function () {
-    fs.mkdirSync(path.resolve(dirs.archive), '0755');
-});
-
-gulp.task('archive:zip', function (done) {
-
-    var archiveName = path.resolve(dirs.archive, pkg.name + '_v' + pkg.version + '.zip');
-    var archiver = require('archiver')('zip');
-    var files = require('glob').sync('**/*.*', {
-        'cwd': dirs.dist,
-        'dot': true // include hidden files
-    });
-    var output = fs.createWriteStream(archiveName);
-
-    archiver.on('error', function (error) {
-        done();
-        throw error;
-    });
-
-    output.on('close', done);
-
-    files.forEach(function (file) {
-
-        var filePath = path.resolve(dirs.dist, file);
-
-        // `archiver.bulk` does not maintain the file
-        // permissions, so we need to add files individually
-        archiver.append(fs.createReadStream(filePath), {
-            'name': file,
-            'mode': fs.statSync(filePath)
-        });
-
-    });
-
-    archiver.pipe(output);
-    archiver.finalize();
-
-});
-
-
+var replace = require('gulp-replace');
 
 gulp.task('concat:js', function() {
-  return gulp.src(dirs.src +'/javascript/**/*')
+  return gulp.src(dirs.src +'/js/**/*')
     .pipe(concat('index.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(dirs.src+'/js'))
+    .pipe(gulp.dest(dirs.dist+'/js'))
 });
-
 
 
 gulp.task('compile:less', function () {
 
-    var banner = '/*! template v' + pkg.version +' */\n\n';
+    var banner = '/*! template v' + cfg.version +' */\n\n';
 
     return gulp.src(dirs.src+'/less/*.less')
                .pipe(less())
                .pipe(plugins.header(banner))
-               .pipe(gulp.dest(dirs.src+'/css'));
+               .pipe(gulp.dest(dirs.dist+'/css'));
 
 });
 
 
 gulp.task('copy:misc', function () {
     return gulp.src([
-         dirs.src+'/**/*',
-        // Exclude the following files
-        // (other tasks will handle the copying of these files)
-	'!'+dirs.src+'/javascript/**/*',
-	'!'+dirs.src+'/less/*'
+      	dirs.src+'/html/**/*'
     ], {
-
         // Include hidden files by default
         dot: true
-
-    }).pipe(gulp.dest(dirs.dist));
+    }).pipe(gulp.dest(dirs.dist+'/html'));
 });
 
 
 gulp.task('jshint', function () {
     return gulp.src([
         'gulpfile.js',
-         dirs.src+'/javascript/**/*'
+         dirs.src+'/js/**/*'
     ]).pipe(plugins.jshint())
       .pipe(plugins.jshint.reporter('jshint-stylish'))
       .pipe(plugins.jshint.reporter('fail'));
@@ -103,7 +57,6 @@ gulp.task('jshint', function () {
 gulp.task('watch', function () {
     gulp.watch([dirs.src+'/less/*'], ['compile:less']);
 });
-
 
 // -----------------------------------------------------------------------------
 // | Main tasks                                                                |
@@ -124,13 +77,6 @@ gulp.task('compile',[
 	'concat:js'
 ]);
 
-gulp.task('archive', function (done) {
-    runSequence(
-        'build',
-        'archive:create_archive_dir',
-        'archive:zip',
-    done);
-});
 
 gulp.task('build', function (done) {
     runSequence(
@@ -142,26 +88,17 @@ gulp.task('build', function (done) {
 
 gulp.task('default', ['build']);
 
-gulp.task('product', function() {
-    return gulp.src(DIST + '**/*.*')
-        .pipe(ftp({
-            host: 'xxx.xxx.xxx.xx',
-            port: 21,
-            user: '',
-            pass: '',
-            remotePath: 'assets/'
-        }))
+gulp.task('beta', function() {
+    return gulp.src(dirs.dist + '/**')
+      	  .pipe(ftp(ftpcfg.beta))
+	
 });
 
-gulp.task('beta', function() {
-    return gulp.src(DIST + '**/*.*')
-        .pipe(ftp({
-            host: 'xxx.xxx.xxx.xx',
-            port: 21,
-            user: '',
-            pass: '',
-            remotePath: 'asssets/'
-        }))
+gulp.task('product', function() {
+    return gulp.src(dirs.dist + '/**')
+      	  .pipe(ftp(ftpcfg.beta))
+	
 });
+
 
 
