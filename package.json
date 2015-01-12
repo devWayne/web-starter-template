@@ -19,7 +19,7 @@
     "run-sequence": "^1.0.1",
     "gulp-concat": "*",
     "gulp-uglify": "*",
-    "gulp-ftp": "^0.2.1"
+    "gulp-ftp-env": "0.1.0"
   },
   "engines": {
     "node": ">=0.10.0"
@@ -27,5 +27,8 @@
   "private": true,
   "keywords": [],
   "author": "Vi",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "gulp-ftp-env": "~0.1.0"
+  }
 }

@@ -12,43 +12,45 @@ var dirs = cfg['h5bpconfigs'].directories;
 var ftpcfg = cfg['ftpconfigs'];
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var ftp = require('gulp-ftp');
+var ftp = require('gulp-ftp-env');
 var replace = require('gulp-replace');
 
 gulp.task('concat:js', function() {
-  return gulp.src(dirs.src +'/js/**/*')
+  return gulp.src(dirs.src +'/assets/js/**/*')
     .pipe(concat('index.js'))
     .pipe(uglify())
-    .pipe(gulp.dest(dirs.dist+'/js'))
+    .pipe(gulp.dest(dirs.dist+'/assets/js'))
 });
 
 
 gulp.task('compile:less', function () {
 
-    var banner = '/*! template v' + cfg.version +' */\n\n';
+    //var banner = '/*! template v' +' */\n\n';
 
-    return gulp.src(dirs.src+'/less/*.less')
+    return gulp.src(dirs.src+'/assets/css/*.less')
                .pipe(less())
-               .pipe(plugins.header(banner))
-               .pipe(gulp.dest(dirs.dist+'/css'));
+             //  .pipe(plugins.header(banner))
+               .pipe(gulp.dest(dirs.dist+'/assets/css'));
 
 });
 
 
 gulp.task('copy:misc', function () {
     return gulp.src([
-      	dirs.src+'/html/**/*'
+    	dirs.src+'/**/*',
+      	'!'+dirs.src+'/assets/css/**/*',
+	'!'+dirs.src+'/assets/js/**/*'
     ], {
         // Include hidden files by default
         dot: true
-    }).pipe(gulp.dest(dirs.dist+'/html'));
+    }).pipe(gulp.dest(dirs.dist));
 });
 
 
 gulp.task('jshint', function () {
     return gulp.src([
         'gulpfile.js',
-         dirs.src+'/js/**/*'
+         dirs.src+'assets/js/**/*'
     ]).pipe(plugins.jshint())
       .pipe(plugins.jshint.reporter('jshint-stylish'))
       .pipe(plugins.jshint.reporter('fail'));
