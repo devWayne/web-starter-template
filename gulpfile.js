@@ -13,7 +13,6 @@ var ftpcfg = cfg['ftpconfigs'];
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var ftpEnv = require('gulp-ftp-env');
-var replace = require('gulp-replace');
 
 gulp.task('concat:js', function() {
   return gulp.src(dirs.src +'/assets/js/**/*')
@@ -24,19 +23,15 @@ gulp.task('concat:js', function() {
 
 
 gulp.task('compile:less', function () {
-
-    //var banner = '/*! template v' +' */\n\n';
-
     return gulp.src(dirs.src+'/assets/css/*.less')
                .pipe(less())
-             //  .pipe(plugins.header(banner))
                .pipe(gulp.dest(dirs.dist+'/assets/css'));
 
 });
 
 gulp.task('copy:img',function(){
     return gulp.src(dirs.src+'/assets/css/img/**/*')
-	       .pipe(gulp.dest(dirs.dist+'/assets/css/img/**/*');
+	       .pipe(gulp.dest(dirs.dist+'/assets/css/img/'));
 });
 
 gulp.task('copy:misc', function () {
