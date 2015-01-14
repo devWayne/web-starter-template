@@ -19,7 +19,7 @@
     "run-sequence": "^1.0.1",
     "gulp-concat": "*",
     "gulp-uglify": "*",
-    "gulp-ftp-env": "0.1.0"
+    "gulp-ftp-env": "*"
   },
   "engines": {
     "node": ">=0.10.0"

@@ -1,7 +1,17 @@
-## WEB APP template
+WEB APP template[![Build Status](https://travis-ci.org/devWayne/web-starter-template.svg?branch=master)](https://travis-ci.org/devWayne/web-starter-template)
+============
 
-- css/js concat&uglify
-- less&jade compile
-- javascript jshint
-- automatic archive
-- automatic ftp push
+> Web Starter Template with
+> css/js concat&uglify
+> less&jade compile
+> automatic ftp publish
+> version control
+
+## Quick start
+
+Choose one of the following options:
+
+1. Use the template generator 
+   [Webstarter](https://github.com/devWayne/webstarter) 
+2. Clone the git repo — `git clone
+   https://github.com/devWayne/web-starter-template.git`

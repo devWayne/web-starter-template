@@ -12,7 +12,7 @@ var dirs = cfg['h5bpconfigs'].directories;
 var ftpcfg = cfg['ftpconfigs'];
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var ftp = require('gulp-ftp-env');
+var ftpEnv = require('gulp-ftp-env');
 var replace = require('gulp-replace');
 
 gulp.task('concat:js', function() {
@@ -97,13 +97,13 @@ gulp.task('default', ['build']);
 
 gulp.task('beta', function() {
     return gulp.src(dirs.dist + '/**')
-      	  .pipe(ftp(ftpcfg.beta))
+      	  .pipe(ftpEnv(ftpcfg.beta))
 	
 });
 
 gulp.task('product', function() {
     return gulp.src(dirs.dist + '/**')
-      	  .pipe(ftp(ftpcfg.beta))
+      	  .pipe(ftpEnv(ftpcfg.beta))
 	
 });
 

@@ -21,8 +21,9 @@
             "user": "",
             "pass": "",
             "remotePath": "asssets/",
-	    "version":"{{v}}
+	    "version":"{{v}}",
+	    "keywords":[{"before":"before-xxx","after":"after-xxx"}]
         }
-    },
+    }
 }
 

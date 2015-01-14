@@ -21,7 +21,8 @@
             "user": "",
             "pass": "",
             "remotePath": "asssets/",
-	    "version":"{{v}}"
+	    "version":"{{v}}",
+	    "keywords":[{"before":"51ping","after":"dianping"}]
         }
     }
 }
