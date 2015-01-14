@@ -8,11 +8,11 @@
     },
     "ftpconfigs": {
         "beta": {
-            "host": "192.168.222.163",
+            "host": "xxx.xxx.xxx.xx",
             "port": "21",
-            "user": "testuser",
-            "pass": "12qwaszx",
-            "remotePath": "topic/movie/",
+            "user": "",
+            "pass": "",
+            "remotePath": "asssets/",
 	    "version":"none"
         },
         "product": {
@@ -22,7 +22,8 @@
             "pass": "",
             "remotePath": "asssets/",
 	    "version":"{{v}}",
-	    "keywords":[{"before":"51ping","after":"dianping"}]
+	    "keywords":[{"before":"before-xxx","after":"after-xxx"}]
         }
     }
 }
+

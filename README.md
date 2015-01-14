@@ -1,11 +1,7 @@
 WEB APP template[![Build Status](https://travis-ci.org/devWayne/web-starter-template.svg?branch=master)](https://travis-ci.org/devWayne/web-starter-template)
 ============
 
-> Web Starter Template with
-> css/js concat&uglify
-> less&jade compile
-> automatic ftp publish
-> version control
+> Web Starter Template with css/js concat&uglify,less&jade compile,automatic ftp publish and version control
 
 ## Quick start
 

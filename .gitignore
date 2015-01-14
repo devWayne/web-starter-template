@@ -30,5 +30,5 @@ node_modules
 .DS_Store
 *.swp
 *.swo
-config.js
+config.json
 dist
